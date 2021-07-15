@@ -1,31 +1,46 @@
 #include "Display.hpp"
 
 
-Display::Display(Chip8& c8): c8(c8) {
-    std::setlocale(LC_ALL, "en_US.UTF-8");
-    initscr();
-    nodelay(stdscr, true);
-    noecho(); cbreak(); keypad(stdscr, true);
-    curs_set(0);
-    main  = newwin(SCREEN_HEIGHT/2+2, SCREEN_WIDTH+2, 0, 23);
-    left  = newwin(SCREEN_HEIGHT/2+2, 23, 0, 0);
-    right = newwin(SCREEN_HEIGHT/2+2, 23, 0, SCREEN_WIDTH+2+23);
-    wattrset(left, A_BOLD); wattrset(main, A_BOLD); wattrset(right, A_BOLD);
+Display::Display(Chip8& c8)
+: c8(c8), assembly(Disassembler::Disassemble(c8.filename)) {
 
-    use_default_colors();
-    start_color();
+    std::setlocale(LC_ALL, "en_US.UTF-8"); // Proper unicode
+    initscr();                             // Init ncurses
+
+    ////////// INPUT SETTINGS ////////
+
+    curs_set(0);           // Invisible cursor
+    noecho();              // Disable input echoing
+    cbreak();              // Disable line buffering
+    nodelay(stdscr, true); // Non Blocking getch()
+    keypad(stdscr, true);  // Function keys
+
+    ///// WINDOWS INITIALIZATION /////
+
+    left  = newwin(SCREEN_HEIGHT/2+2, 23, 0, 0);                 // Variables
+    main  = newwin(SCREEN_HEIGHT/2+2, SCREEN_WIDTH+2, 0, 23);    // Emulator
+    right = newwin(SCREEN_HEIGHT/2+2, 23, 0, SCREEN_WIDTH+2+23); // Assembly
+
+    wattrset(left, A_BOLD);
+    wattrset(main, A_BOLD);
+    wattrset(right, A_BOLD);
+
+    //////// COLOR DEFINITION ///////
+
+    use_default_colors(); start_color();
 
     init_pair(1, 232, 232); // NO PIXELS
     init_pair(2, 232, 114); // 0 TOP, 1 BOTTOM
     init_pair(3, 114, 232); // 1 TOP, 0 BOTTOM
     init_pair(4, 114, 114); // 1 TOP, 1 BOTTOM
+
     init_pair(5, 114, -1);  // NAME
     init_pair(6, 204, -1);  // VALUE
     init_pair(7, 194, -1);  // REGISTER ASM
     init_pair(8, 223, -1);  // HEX ASM
     init_pair(9, 230, -1);  // OTHER ASM
 
-    assembly = Disassembler::Disassemble(c8.filename);
+    // assembly = Disassembler::Disassemble(c8.filename);
 }
 
 Display::~Display() { endwin(); }
@@ -41,11 +56,8 @@ void Display::Refresh() const {
 
 void Display::UserInput() const {
     int input = getch();
-    // static int err_counter;
 
     if (input == ERR) return;
-    // if (input == ERR && err_counter++ == 50)
-    //     c8.hexpad.Reset(), err_counter = 0;
 
     if      (input == 27)  c8.quit   = true;                                            // Del
     else if (input == 32 ) c8.paused ^= 1;                                              // Space
@@ -56,25 +68,29 @@ void Display::UserInput() const {
     else                   c8.hexpad.SetKey(input);                                     // Hexpad
 }
 
-
+// Emulator
 void Display::MainPannel() const {
-    if (c8.ST > 0) wattron(main, COLOR_PAIR(6));
+    if (c8.ST > 0) wattron(main, COLOR_PAIR(6)); // Color box for sound timer
     box(main,  0, 0);
     mvwprintw(main, 0, 2, "[%s]", c8.filename.c_str());
     mvwprintw(main, 17, 2,
-              "[esc->quit]─[enter->reset]─[spc->pause]─[tab->step]─[-%.0fHz+]", c8.cycle_speed);
+        "[esc->quit]─[enter->reset]─[spc->pause]─[tab->step]─[-%.0fHz+]", c8.cycle_speed);
 
+    // halfblock char + bg color for correct aspect ratio
     for (int row = 0; row < SCREEN_HEIGHT; row+=2) {
         for (int col = 0; col < SCREEN_WIDTH; col++) {
-            auto color_pair = (c8.GetPixel(col, row+1) << 1 | c8.GetPixel(col, row)) + 1;
-            wattron(main, COLOR_PAIR(color_pair));
+            auto pixel_top = c8.GetPixel(col, row  );
+            auto pixel_bot = c8.GetPixel(col, row+1);
+            auto color = (pixel_bot << 1 | pixel_top) + 1;
+            wattron(main, COLOR_PAIR(color));
             mvwaddwstr(main, row/2+1, col+1, L"▄");
-            wattroff(main, COLOR_PAIR(color_pair));
+            wattroff(main, COLOR_PAIR(color));
         }
     }
     wrefresh(main);
 }
 
+// Variables
 void Display::LeftPannel() const {
     auto field = [this](int y, int x1, const char* name, int x2, int val, int hex_f=0x02) {
         wattron(left, COLOR_PAIR(5));
@@ -103,6 +119,7 @@ void Display::LeftPannel() const {
 
     werase(left);
     box(left,  0, 0);
+
     mvwprintw(left, 0, 3, "┐REG┌──┬");                 mvwprintw(left, 0, 12, "┐VARIOUS┌");
     field(1 , 2, "v0", 5, c8.V[0]);  sep(1 , 10, "│"); field(1 , 12, "OP", 15, c8.OP, 0x04);
     field(2 , 2, "v1", 5, c8.V[1]);  sep(2 , 10, "│"); field(2 , 12, "PC", 15, c8.PC-2, 0x04);
@@ -127,12 +144,13 @@ void Display::LeftPannel() const {
     wrefresh(left);
 }
 
+// Assembly
 void Display::RightPannel() const {
 
     auto idx = std::abs(c8.PC-2 - ENTRY_POINT) / 2;
     static int old_idx;
 
-    auto fmt = [this, idx](auto offset) {
+    auto format_assembly = [this, idx](auto offset) {
         auto line = assembly[idx+offset];
 
         // Address
@@ -169,9 +187,12 @@ void Display::RightPannel() const {
         }
     };
 
+    // Only refresh if current instruction isn't on screen already
     if (idx < old_idx || (idx - old_idx) > 15 || idx == 0) {
         werase(right);
-        for (auto i = 0; i < 16 && idx+i < (int)assembly.size(); i++) fmt(i);
+        for (auto i = 0; i < 16; i++)
+            if (idx+i < (int)assembly.size())
+                format_assembly(i);
         old_idx = idx;
     }
 

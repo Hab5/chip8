@@ -9,7 +9,7 @@ std::vector<std::string> Disassembler::Disassemble(const std::string& filename) 
         auto bytes_size = static_cast<std::size_t>(file.read(
             reinterpret_cast<char*>(program.data()), program.size()).gcount());
         if (bytes_size > 4096 - 0x200)
-            throw std::runtime_error("chip8: Failed to fit ROM in memory");
+            throw std::runtime_error("Disassembler: Failed to fit ROM in memory");
         std::uint16_t OP;
         std::vector<std::string> lines;
         for (std::uint16_t PC = 0; PC < bytes_size; PC+=2) {
@@ -23,7 +23,7 @@ std::vector<std::string> Disassembler::Disassemble(const std::string& filename) 
             }
         }
         return lines;
-    } else throw std::runtime_error("chip8: Failed to open file");
+    } else throw std::runtime_error("Disassembler: Failed to open file");
 };
 
 std::string Disassembler::fmt_op(std::string fmt, std::uint16_t OP) {

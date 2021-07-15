@@ -17,8 +17,9 @@
 
 #define SCREEN_WIDTH  64
 #define SCREEN_HEIGHT 32
-#define ENTRY_POINT   0x0200
-#define FONT_ADDRESS  0x0500
+
+#define ENTRY_POINT   0x200 // Default PC
+#define FONT_ADDRESS  0x50
 
 #define N(bytes)    ( bytes & 0x000f)        // ...N
 #define NN(bytes)   ( bytes & 0x00ff)        // ..NN
@@ -30,13 +31,14 @@
 #define VY V[Y(OP)]
 #define VF V[0xf]
 
+
 const std::array<std::uint8_t, 80> fontset {
-    0xf0, 0x90, 0x90, 0x90, 0xf0, // 0
-    0x20, 0x60, 0x20, 0x20, 0x70, // 1
-    0xf0, 0x10, 0xf0, 0x80, 0xf0, // 2
-    0xf0, 0x10, 0xf0, 0x10, 0xf0, // 3
-    0x90, 0x90, 0xf0, 0x10, 0x10, // 4
-    0xf0, 0x80, 0xf0, 0x10, 0xf0, // 5
+    0xf0, 0x90, 0x90, 0x90, 0xf0, // 0 ------> Example:
+    0x20, 0x60, 0x20, 0x20, 0x70, // 1     |-> 0b11110000 -> 0xf0
+    0xf0, 0x10, 0xf0, 0x80, 0xf0, // 2     |-> 0b10010000 -> 0x90
+    0xf0, 0x10, 0xf0, 0x10, 0xf0, // 3     |-> 0b10010000 -> 0x90
+    0x90, 0x90, 0xf0, 0x10, 0x10, // 4     |-> 0b10010000 -> 0x90
+    0xf0, 0x80, 0xf0, 0x10, 0xf0, // 5     |-> 0b11110000 -> 0xf0
     0xf0, 0x80, 0xf0, 0x90, 0xf0, // 6
     0xf0, 0x10, 0x20, 0x40, 0x40, // 7
     0xf0, 0x90, 0xf0, 0x90, 0xf0, // 8
@@ -51,23 +53,17 @@ const std::array<std::uint8_t, 80> fontset {
 
 class Display;
 
-class Chip8 final {
-
-friend Display;
+class Chip8 final { friend Display;
 
 public:
-    Chip8(const std::string& filename): filename(filename) {
-        LoadROM(filename);
-        LoadFont();
-    }
-
+    Chip8(const std::string& filename);
 
     void Cycle();  // One instruction
-    void Reset();  // Reset ROM execution
+    void Reset();  // Reset ROM
 
     inline void UpdateTimers() { DT -= (DT>0), ST -= (ST>0); }
 
-    inline bool GetPixel(int x, int y) const { return pixels[x + ( y * SCREEN_WIDTH)]; }
+    inline bool GetPixel(int x, int y) const { return pixels[x + y*SCREEN_WIDTH]; }
 
     float cycle_speed  = 150.f; // in Hertz
     bool  quit         = false;

@@ -1,17 +1,20 @@
 #include "Chip8.hpp"
 
+Chip8::Chip8(const std::string& filename): filename(filename) {
+    LoadROM(filename);
+    LoadFont();
+}
+
 void Chip8::Cycle() {
-    
     if (!paused || step) {
-        OP = memory[PC] << 8 | memory[PC+1]; PC += 2;
+        OP = memory[PC] << 8 | memory[PC+1]; // Next two bytes
+        PC += 2; step = false; // Increment PC for next cycle
+
         auto op_ptr = std::function<void()>();
-        for (auto mask: {0xf0ff, 0xf00f, 0xf000}) {
-            if ((op_ptr = Dispatch[(OP & mask)]) != nullptr) {
-                std::invoke(op_ptr);
-                break;
-            }
-        }
-        step = false;
+        // Masks ordered that way to avoid collision
+        for (auto mask: {0xf0ff, 0xf00f, 0xf000})
+            if ((op_ptr = Dispatch[(OP & mask)]) != nullptr)
+                return std::invoke(op_ptr);
     }
 }
 
@@ -32,17 +35,12 @@ void Chip8::LoadFont() {
 }
 
 void Chip8::Reset() {
+    PC = ENTRY_POINT;
+    I = OP = DT = ST = 0x0000;
     memory.fill(0x00);
-    stack.clear();
+    pixels.fill(0x00);
     V.fill(0x0000);
-
-    PC     = ENTRY_POINT;
-    I      = 0x0000;
-    OP     = 0x0000;
-    DT     = 0x0000;
-    ST     = 0x0000;
-
-    pixels.fill(false);
+    stack.clear();
 
     LoadROM(filename);
     LoadFont();

@@ -17,20 +17,20 @@ int main(int argc, char* argv[]) {
     Chip8   chip8(argv[1]);
     Display display(chip8);
 
-    auto last_tick = hr_clock::now();
+    auto last_tick_cpu   = hr_clock::now();
     auto last_tick_timer = hr_clock::now();
 
     while (!chip8.quit) {
         auto tick = hr_clock::now();
 
-        float delta       = ms(tick - last_tick).count();
+        float delta_cpu   = ms(tick - last_tick_cpu  ).count();
         float delta_timer = ms(tick - last_tick_timer).count();
 
 
-        if (delta > 1/chip8.cycle_speed*1000) // 150hz default
-            chip8.Cycle(), display.Refresh(), last_tick = tick;
+        if (delta_cpu > 1/chip8.cycle_speed*1000) // 150Hz default
+            chip8.Cycle(), display.Refresh(), last_tick_cpu = tick;
 
-        if (delta_timer > 1/60.f*1000) // 60hz
+        if (delta_timer > 1/60.f*1000) // 60Hz
             chip8.UpdateTimers(), last_tick_timer = tick;
     }
 
