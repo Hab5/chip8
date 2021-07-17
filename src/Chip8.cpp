@@ -1,5 +1,7 @@
 #include "Chip8.hpp"
 
+// The Dispatch hashtable, is in the header file.
+
 Chip8::Chip8(const std::string& filename): filename(filename) {
     LoadROM(filename);
     LoadFont();
