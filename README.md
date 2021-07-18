@@ -2,11 +2,42 @@
 https://user-images.githubusercontent.com/20952474/125767156-247666d7-33e1-4bb8-9ee9-c5eeb5e86349.mp4
 
 # Chip-8
+A Chip-8 emulator (interpreter, to be pedantic), debugger, and disassembler, made to run in a terminal. 
+The emulator passes all testing ROMS I could get my hands on.
+The disassembler isn't recursive; does not have any dependencies (code wise), and all its methods are `static`.
+It can be used like this: `Disassembler::Disassemble(filename)`
+The debugger, is pretty much what you'd expect, a nice UI to track registers and such, and the ability to step through the assembly while the program is running.
 
-Chip-8 is a simple, interpreted, programming language which was first used on some do-it-yourself computer systems in the late 1970s and early 1980s. The COSMAC VIP, DREAM 6800, and ETI 660 computers are a few examples.
-These computers typically were designed to use a television as a display, had between 1 and 4K of RAM, and used a 16-key hexadecimal keypad for input. [<sup>1</sup>][^1]
+## Usage
+To download and compile:
+
+    git clone https://github.com/Hab5/chip8.git &&
+    cd chip8 &&
+    make release
+    
+To run the emulator: 
+
+    ./chip8 your-file
+Some ROMS are included in the `roms/` directory. ([Credit](#credit-for-the-roms-included))
+
+## Dependency
+- `ncurses` for the `Text User Interface (TUI)`
+   - Most likely on your system already, if not, it is packaged for every package manager out there.  
+
+## Keybindings
+|              |                       |
+|--------------|-----------------------|
+| **`Escape`** | Quit                  |
+| **`Enter`**  | Reset ROM             |
+| **`Space`**  | Pause                 |
+| **`Tab`**    | Step (when paused)    |
+| **`-`**      | Decrease speed (20Hz) |
+| **`+`**      | Increase speed (20Hz) |
+
+See [HexPad](#hexpad) for the Chip-8 keyboard.
 
 ## Specifications
+Most of the information is sourced from [Cowgod's Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM); the de facto  Chip-8 reference.  
 ### Memory
 **4096 bytes of RAM**  
 * `0x000 - 0x1ff` Reserved (used to be for the interpreter itself)
@@ -26,14 +57,14 @@ ___
 - **`I`** 16-bit Index register  
 - **`PC`** 16-bit Program Counter  
 - **`STACK`** 16 * 16-bit values to store return addresses from subroutines  
-- **`SP`** 8-bit Stack Pointer (unused, as I use `std::vector` for the stack)  
+- **`SP`** 8-bit Stack Pointer (unused, as I make use of `std::vector` for the stack)  
 - **`DT`** 8-bit Delay Timer  
 - **`ST`** 8-bit Sound Timer  
 ___
 ### Display
 - Resolution of **`64x32`**
-- The TUI uses a resolution of **`64x16`** as it make uses of the lower half-block unicode character `▄` in combination with the foreground/background color of a character cell to double the vertical resolution and simulate the correct aspect ratio.
-__
+- The TUI uses a resolution of **`64x16`** as it make uses of the lower half-block unicode character `▄` in combination with the foreground/background color of a character cell to double the terminal's vertical resolution and simulate the correct aspect ratio.
+___
 ### Timers & Sound
 - **`Delay Timer`**: Is active whenever the **`DT`** register is non-zero. Is decremented by 1 at the rate of **60Hz**.  
 - **`Sound Timer`**: Is active whenever the **`ST`** register is non-zero. Is decremented by 1 at the rate of **60hz**.  
@@ -47,7 +78,7 @@ ___
     A S D F  
     Z X C V
 
-**Chip-8:**  
+**Original Chip-8:**  
 
     1 2 3 C  
     4 5 6 D  
@@ -57,8 +88,8 @@ ___
 ### Instruction Set & Assembly mnemonics
 
 - The Chip-8 has 36 different instructions  
-- All instruction are two bytes long  
-- The first byte of each instruction should be located at an even address in memory  
+- All instructions are two bytes long  
+- The first byte of each instructions should be located at an even address in memory  
     - Sprites can be an uneven number of bytes, but must be padded so instructions following it stays properly situated in memory  
   
   
@@ -108,10 +139,15 @@ Variables in instructions are represented this way:
 | FX65   | **ld**     | VX, [I]   | Store memory from I to V0->VX                       |
 ___
 # Resources
-
 [Cowgod's Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTML)
+[Mattmikolay's Instruction Set Details](https://github.com/mattmikolay/chip-8/wiki/CHIP%E2%80%908-Instruction-Set)
+[Wikipedia's Chip-8 Page](https://en.wikipedia.org/wiki/CHIP-8)
 
-# References
-[^1]: http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#1.0
+# Credit for the ROMS included  
+- Testing Roms:
+   - https://github.com/corax89/chip8-test-rom
+   - https://github.com/Skosulor/c8int/tree/master/test
+   - https://github.com/metteo/chip8-test-rom
+- https://github.com/dmatlack/chip8/tree/master/roms (For everything else, details about authors in filename)
 
 
