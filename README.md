@@ -2,11 +2,7 @@
 https://user-images.githubusercontent.com/20952474/125767156-247666d7-33e1-4bb8-9ee9-c5eeb5e86349.mp4
 
 # Chip-8
-A Chip-8 emulator (interpreter, to be pedantic), debugger, and disassembler, made to run in a terminal. 
-The emulator passes all testing ROMS I could get my hands on.
-The disassembler isn't recursive; does not have any dependencies (code wise), and all its methods are `static`.
-It can be used like this: `Disassembler::Disassemble(filename)`
-The debugger, is pretty much what you'd expect, a nice UI to track registers and such, and the ability to step through the assembly while the program is running.
+A Chip-8 emulator (interpreter, to be pedantic), debugger, and disassembler, made to run in a terminal.  
 
 ## Usage
 To download and compile:
