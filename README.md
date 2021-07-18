@@ -94,11 +94,11 @@ ___
     - Sprites can be an uneven number of bytes, but must be padded so instructions following it stays properly situated in memory.  
   
   
-Variables in instructions are represented this way:  
-    - **`0xfXYf`** X,Y = Nibbles (Used to designate registers)  
-    - **`0xfNNN`** NNN = Address  
-    - **`0xfNNf`** NN  = Byte  
-    - **`0xfffN`** N   = Nibble  
+Variables in instructions are represented this way:
+- **`0xfXYf`** X,Y = Nibbles (Used to designate registers)  
+- **`0xfNNN`** NNN = Address  
+- **`0xfNNf`** NN  = Byte  
+- **`0xfffN`** N   = Nibble  
 
 
 | **Opcode** | **Mnemonic** | **Variables** | **Description**                                         |
