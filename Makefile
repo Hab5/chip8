@@ -1,7 +1,7 @@
 TARGET    := chip8
 
 CXX       := g++
-CXX_FLAGS := -Wall -Wextra -std=c++17
+CXX_FLAGS := -Wall -Wextra -std=c++17 
 CXX_LINK  := -lncursesw
 
 SRC_DIR   := src
