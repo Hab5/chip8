@@ -64,7 +64,7 @@ ___
 ___
 ### Display
 - Resolution of **`64x32`**
-- The TUI uses a resolution of **`64x16`** as it make uses the lower half-block unicode character `▄` in combination with the foreground/background color of the character cell to double the terminal's vertical resolution and simulate the correct aspect ratio.
+- The TUI uses a resolution of **`64x16`** as it uses the lower half-block unicode character `▄` in combination with the foreground/background color of the character cell to double the terminal's vertical resolution and simulate the correct aspect ratio.
 ___
 ### Timers & Sound
 - **`Delay Timer`**: Is active whenever the **`DT`** register is non-zero. Is decremented by 1 at the rate of **60Hz**.  
