@@ -4,7 +4,8 @@ https://user-images.githubusercontent.com/20952474/125767156-247666d7-33e1-4bb8-
 # Chip-8
 A Chip-8 emulator (interpreter, to be pedantic), debugger, and disassembler, made to run in a terminal.  
 
-## Details
+## Misc
+- A relatively modern terminal is recommended for a smooth refresh rate.
 - A Monospaced font is recommended to display "halfblock" unicode characters seamlessly, but is not imperative.  
 - The emulator has only been tested on Linux, but there shouldn't be any issues on macOS.  
 - For Windows users, try to run it in WSL, no guarantees tho.
