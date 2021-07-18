@@ -64,7 +64,7 @@ ___
 ___
 ### Display
 - Resolution of **`64x32`**
-- The TUI uses a resolution of **`64x16`** as it make uses of the lower half-block unicode character `▄` in combination with the foreground/background color of a character cell to double the terminal's vertical resolution and simulate the correct aspect ratio.
+- The TUI uses a resolution of **`64x16`** as it make uses the lower half-block unicode character `▄` in combination with the foreground/background color of the character cell to double the terminal's vertical resolution and simulate the correct aspect ratio.
 ___
 ### Timers & Sound
 - **`Delay Timer`**: Is active whenever the **`DT`** register is non-zero. Is decremented by 1 at the rate of **60Hz**.  
@@ -88,10 +88,10 @@ ___
 ___
 ### Instruction Set & Assembly mnemonics
 
-- The Chip-8 has 36 different instructions  
-- All instructions are two bytes long  
-- The first byte of each instructions should be located at an even address in memory  
-    - Sprites can be an uneven number of bytes, but must be padded so instructions following it stays properly situated in memory  
+- The Chip-8 has 36 different instructions.  
+- All instructions are two bytes long.  
+- The first byte of each instructions should be located at an even address in memory.  
+    - Sprites can be an uneven number of bytes, but must be padded so instructions following it stays properly situated in memory.  
   
   
 Variables in instructions are represented this way:  
