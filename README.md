@@ -149,6 +149,7 @@ ___
    - https://github.com/corax89/chip8-test-rom
    - https://github.com/Skosulor/c8int/tree/master/test
    - https://github.com/metteo/chip8-test-rom
-- https://github.com/dmatlack/chip8/tree/master/roms (For everything else, details about authors in filename)
+- Everything else (authors in filenames)
+    - https://github.com/dmatlack/chip8/tree/master/roms
 
 
