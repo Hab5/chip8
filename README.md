@@ -140,12 +140,12 @@ Variables in instructions are represented this way:
 | FX55   | **ld**     | [I], VX   | Store registers V0->VX in memory from I             |
 | FX65   | **ld**     | VX, [I]   | Store memory from I to V0->VX                       |
 ___
-# Resources
+## Resources
 [Cowgod's Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTML)  
 [Mattmikolay's Instruction Set Details](https://github.com/mattmikolay/chip-8/wiki/CHIP%E2%80%908-Instruction-Set)  
 [Chip-8's Wikipedia Page](https://en.wikipedia.org/wiki/CHIP-8)  
 
-# Credit for the ROMS included  
+## Credit for the ROMS included  
 - Testing Roms:
    - https://github.com/corax89/chip8-test-rom
    - https://github.com/Skosulor/c8int/tree/master/test
