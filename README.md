@@ -143,7 +143,7 @@ ___
 # Resources
 [Cowgod's Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTML)  
 [Mattmikolay's Instruction Set Details](https://github.com/mattmikolay/chip-8/wiki/CHIP%E2%80%908-Instruction-Set)  
-[Wikipedia's Chip-8 Page](https://en.wikipedia.org/wiki/CHIP-8)  
+[Chip-8's Wikipedia Page](https://en.wikipedia.org/wiki/CHIP-8)  
 
 # Credit for the ROMS included  
 - Testing Roms:
