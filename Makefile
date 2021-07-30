@@ -1,51 +1,106 @@
-TARGET    := chip8
+########################################################################
+############################ USER SETTINGS #############################
+########################################################################
 
-CXX       := g++
-CXX_FLAGS := -Wall -Wextra
-CXX_LINK  := -lncursesw
+TARGET  := chip8
 
-SRC_DIR   := src
-SRC       := $(wildcard $(SRC_DIR)/*.cpp)
+CC      :=  g++
+FLAGS   := -Wall -Wextra
+STD     := -std=c++17
+RELEASE := -O3 -march=native
+DEBUG   := -g3 -fsanitize=address,undefined
+LIBS    := -lncurses
 
-INC_DIR   :=
-INC       :=
+OBJDIR  := obj
 
-OBJ_DIR   := obj
-OBJ       := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
-DEP       := $(OBJ:.o=$(OBJ_DIR)/.d)
+########################################################################
+############################ MAKEFILE RULES ############################
+########################################################################
 
+SRC     := $(wildcard *.cpp) $(wildcard */*.cpp)
+INC     := $(wildcard *.hpp) $(wildcard */*.hpp)
 
+OBJ     := $(patsubst %.cpp,$(OBJDIR)/%.o,$(SRC))
+DEPS    := $(patsubst %.cpp,$(OBJDIR)/%.d,$(SRC))
+
+debug:   FLAGS += $(DEBUG)
+debug:   all
+
+release: FLAGS += $(RELEASE)
+release: all
 
 all: build $(TARGET)
+	@$(ECHO) $(FINISHED) "$(GRN)COMPILING $(RST)\n"
 
-$(OBJ_DIR)/%.o: %.cpp
+
+$(OBJDIR)/%.o: %.cpp Makefile
 	@mkdir -p $(@D)
-	@$(CXX) $(CXX_FLAGS) $(INC) -c $< -MMD -o $@
+	@$(ECHO) $(BUILDING) "$(BLU)$(patsubst %.cpp,%.o,$<)$(RST) \
+	-> $(BLU)$(patsubst %.cpp,%.d,$<)$(RST)"
+	@$(CC) $(FLAGS) $(STD) -MMD -MP -c $< -o $@
 
 $(TARGET): $(OBJ)
 	@mkdir -p $(@D)
-	@$(CXX) $(CXX_FLAGS) $(CXX_LINK) -o $(TARGET) $^
-	@echo "$(TARGET): compiled"
+	@$(CC) $(FLAGS) $(STD) $(LIBS) $^ -o $(TARGET)
+	@$(ECHO) $(BUILDING) $(TARGET)
 
--include $(DEP)
-
-.PHONY: all build clean debug release info
+-include $(DEPS)
 
 build:
-	@mkdir -p $(OBJ_DIR)
-
-debug: CXX_FLAGS += -g3 -fsanitize=address,undefined
-debug: all
-
-release: CXX_FLAGS += -O3
-release: all
+	@$(STARTING) && sleep 0.2
+	@mkdir -p $(OBJDIR)
 
 clean:
-	-@rm -rf $(OBJ_DIR) $(TARGET)
-	@echo "$(TARGET): cleaned"
+	@$(STARTING) && sleep 0.2
+	-@rm -rf $(OBJDIR) $(TARGET)
+	@$(ECHO) $(DELETING) "$(BLU)object files$(RST)"     && sleep 0.2
+	@$(ECHO) $(DELETING) "$(BLU)dependency files$(RST)" && sleep 0.2
+	@$(ECHO) $(DELETING) "$(BLU)$(OBJDIR)/$(RST)"       && sleep 0.2
+	@$(ECHO) $(DELETING) "$(BLU)${TARGET}$(RST)"        && sleep 0.2
+	@$(ECHO) $(FINISHED) "$(GRN)CLEANING $(RST)\n"
 
 info:
-	@echo "[*] Sources:         ${SRC}         "
-	@echo "[*] Objects:         ${OBJECTS}     "
-	@echo "[*] Object dir:      ${OBJ_DIR}     "
-	@echo "[*] Dependencies:    ${DEPENDENCIES}"
+	@echo -e "$(GRN)GENERAL:\n\
+	$(YLW)   TARGET  | $(BLU)$(TARGET)$(RST)\n\
+	$(YLW)   CC      | $(BLU)$(CC)$(RST)\n\
+	$(YLW)   LIBS    | $(BLU)$(LIBS)$(RST)\n\
+	$(YLW)   FLAGS   | $(BLU)$(FLAGS)$(RST)\n\
+	$(YLW)   STD     | $(BLU)$(STD)$(RST)\n\
+	$(YLW)   RELEASE | $(BLU)$(RELEASE)$(RST)\n\
+	$(YLW)   DEBUG   | $(BLU)$(DEBUG)$(RST)\n "
+
+	@echo -e "$(GRN)SOURCES:$(BLU)\n $(patsubst %.cpp,  %.cpp\n,$(SRC))"
+	@echo -e "$(GRN)INCLUDE:$(BLU)\n $(patsubst %.hpp,  %.hpp\n,$(INC))"
+	@echo -e "$(GRN)OBJECTS:$(BLU)\n $(patsubst %.cpp,  %.o\n,$(SRC))"
+	@echo -e "$(GRN)DEPENDS:$(BLU)\n $(patsubst %.cpp,  %.d\n,$(SRC))"
+
+.PHONY: all build debug release clean info
+
+########################################################################
+####################### PROGRESS INDICATION TOOLS ######################
+########################################################################
+
+RED := \033[31m
+GRN := \033[32m
+YLW := \033[33m
+BLU := \033[34m
+RST := \033[0m
+CLR := \033[2K
+
+STARTING  := echo -en "\r$(YLW)  0% $(BLU)STARTING $(RST)"
+CREATING  := "$(GRN)CREATING$(RST)"
+BUILDING  := "$(GRN)BUILDING$(RST)"
+DELETING  := "$(RED)DELETING$(RST)"
+FINISHED  := "$(BLU)FINISHED$(RST)"
+
+ifndef ECHO
+TOTAL  != $(MAKE) $(MAKECMDGOALS) --dry-run ECHO=FOUND | grep -c FOUND
+CURRENT = $(eval HIT_N != expr $(HIT_N) + 1)$(HIT_N)
+PERCENT = expr $(CURRENT) '*' 100 / $(TOTAL)
+ECHO    = echo -en "\r$(CLR)$(YLW)`expr " \`$(PERCENT)\`" \
+                                    : '.*\(...\)$$'`%$(RST)"
+endif
+
+########################################################################
+########################################################################
+########################################################################
