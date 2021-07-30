@@ -2,7 +2,13 @@
 ############################ USER SETTINGS #############################
 ########################################################################
 
+<<<<<<< HEAD
 TARGET  := chip8
+=======
+CXX       := g++
+CXX_FLAGS := -Wall -Wextra -std=c++17 
+CXX_LINK  := -lncursesw
+>>>>>>> 85646b372aec03920f302151a80dc8d5ced29bed
 
 CC      :=  g++
 FLAGS   := -Wall -Wextra

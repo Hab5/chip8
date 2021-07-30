@@ -26,7 +26,6 @@ int main(int argc, char* argv[]) {
         float delta_cpu   = ms(tick - last_tick_cpu  ).count();
         float delta_timer = ms(tick - last_tick_timer).count();
 
-
         if (delta_cpu > 1/chip8.cycle_speed*1000) // 150Hz default
             chip8.Cycle(), display.Refresh(), last_tick_cpu = tick;
 

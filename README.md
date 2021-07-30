@@ -4,7 +4,8 @@ https://user-images.githubusercontent.com/20952474/125767156-247666d7-33e1-4bb8-
 # Chip-8
 A Chip-8 emulator (interpreter, to be pedantic), debugger, and disassembler, made to run in a terminal.  
 
-## Details
+## Misc
+- A relatively modern terminal is recommended for a smooth refresh rate.
 - A Monospaced font is recommended to display "halfblock" unicode characters seamlessly, but is not imperative.  
 - The emulator has only been tested on Linux, but there shouldn't be any issues on macOS.  
 - For Windows users, try to run it in WSL, no guarantees tho.
@@ -139,16 +140,17 @@ Variables in instructions are represented this way:
 | FX55   | **ld**     | [I], VX   | Store registers V0->VX in memory from I             |
 | FX65   | **ld**     | VX, [I]   | Store memory from I to V0->VX                       |
 ___
-# Resources
-[Cowgod's Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTML)
-[Mattmikolay's Instruction Set Details](https://github.com/mattmikolay/chip-8/wiki/CHIP%E2%80%908-Instruction-Set)
-[Wikipedia's Chip-8 Page](https://en.wikipedia.org/wiki/CHIP-8)
+## Resources
+[Cowgod's Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTML)  
+[Mattmikolay's Instruction Set Details](https://github.com/mattmikolay/chip-8/wiki/CHIP%E2%80%908-Instruction-Set)  
+[Chip-8's Wikipedia Page](https://en.wikipedia.org/wiki/CHIP-8)  
 
-# Credit for the ROMS included  
+## Credit for the ROMS included  
 - Testing Roms:
    - https://github.com/corax89/chip8-test-rom
    - https://github.com/Skosulor/c8int/tree/master/test
    - https://github.com/metteo/chip8-test-rom
-- https://github.com/dmatlack/chip8/tree/master/roms (For everything else, details about authors in filename)
+- Everything else (authors in filenames)
+    - https://github.com/dmatlack/chip8/tree/master/roms
 
 
