@@ -118,7 +118,7 @@ Variables in instructions are represented this way:
 | 8XY1   | **or**     | VX, VX    | Set VX \|= VY                                       |
 | 8XY2   | **and**     | VX, VY    | Set VX &= VY                                        |
 | 8XY3   | **xor**     | VX, VY    | Set VX ^= VY                                        |
-| 8XY4   | **add**     | VX, VY    | Set VX += VY, VF = carry                            |
+| 8XY4   | **add**     | VX, VY    | Set VX += VY, VF = CARRY                            |
 | 8XY5   | **sub**     | VX, VY    | Set VX -= VY, VF = !BORROW                          |
 | 8XY6   | **shr**     | VX, {,VY} | Set VX >>= 1, VF = LSB(VX), VX /= 2                 |
 | 8XY7   | **subn**     | VX, VY    | Set VX = VY - VX, VF = !BORROW                      |
